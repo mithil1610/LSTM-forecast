@@ -116,7 +116,7 @@ def forecast():
 
     # create image Urls
     BASE_IMAGE_PATH = os.environ.get(
-        'BASE_IMAGE_PATH', 'https://storage.cloud.google.com/lstm-forecasting/')
+        'BASE_IMAGE_PATH', 'YOUR BASE_IMAGE_PATH')
     LOCAL_IMAGE_PATH = "static/images/"
 
     MODEL_LOSS_IMAGE_NAME = "model_loss_" + type + ".png"
@@ -130,16 +130,16 @@ def forecast():
 
     # Bucket Name
     BUCKET_NAME = os.environ.get(
-        'BUCKET_NAME', 'lstm-forecasting')
+        'BUCKET_NAME', 'Your BUCKET_NAME')
 
     # model.summary()
 
     plt.figure(figsize=(8, 4))
     plt.plot(history.history['loss'], label='Train Loss')
     plt.plot(history.history['val_loss'], label='Test Loss')
-    plt.title('model loss for ' + type)
-    plt.ylabel('loss')
-    plt.xlabel('epochs')
+    plt.title('Model Loss For ' + type)
+    plt.ylabel('Loss')
+    plt.xlabel('Epochs')
     plt.legend(loc='upper right')
     plt.savefig(LOCAL_IMAGE_PATH + MODEL_LOSS_IMAGE_NAME)
 
@@ -154,8 +154,8 @@ def forecast():
     axs.plot(np.arange(len(Y_train), len(Y_train) + len(Y_test)),
              y_pred, 'r', label="prediction")
     axs.legend()
-    axs.set_title('LSTM generated data for ' + type)
-    axs.set_xlabel('Time steps')
+    axs.set_title('LSTM Generated Data For ' + type)
+    axs.set_xlabel('Time Steps')
     axs.set_ylabel('Issues')
     plt.savefig(LOCAL_IMAGE_PATH + LSTM_GENERATED_IMAGE_NAME)
 
@@ -166,7 +166,7 @@ def forecast():
     axs.xaxis.set_major_locator(locator)
     axs.xaxis.set_major_formatter(mdates.AutoDateFormatter(locator))
     axs.legend()
-    axs.set_title('All Issues data')
+    axs.set_title('All Issues Data')
     axs.set_xlabel('Date')
     axs.set_ylabel('Issues')
     plt.savefig(LOCAL_IMAGE_PATH + ALL_ISSUES_DATA_IMAGE_NAME)

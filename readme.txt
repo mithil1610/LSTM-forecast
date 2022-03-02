@@ -12,16 +12,23 @@ Step2: What is Google Cloud Storage?
 
 Step3: Deploying LSTM to gcloud platform
        1: You must have Docker(https://www.docker.com/get-started) and Google Cloud SDK(https://cloud.google.com/sdk/docs/install) 
-           installed on your computer. Then, Create a gcloud project FOR LSTM. 
+           installed on your computer. Then, Create a gcloud project FOR LSTM  and enable the billing account. 
        2. Steps to follow while creating LSTM gcloud project:
             1. Go to GCP Platform, create a LSTM gcloud project.
-            2. After creating the LSTM gcloud project, go gcloud storage of LSTM gcloud project and create a bucket and add bucket name
+            2. After creating the LSTM gcloud project, go to gcloud storage of LSTM gcloud project then click on 
+               create bucket, then add name to your bucket click on continue, then choose where to store your data, there 
+               choose location type to "region" and location to "us-central1(Iowa)", then click on continue, then Choose a default storage class for your data
+               and choose option "standard" and click continue and then click on create then ypu will automatically navigated to "bucket details", there you 
+               will see "objects" and in "objects" you will see "buckets" click on "buckets", you will be able to see your assigned bucket name with checkbox
+               click on checkbox, then on the right side you will be able to see "permission" and "labels",in "permission" scroll down you will be able to see
+               "ADD PRINCIPAL" click on "ADD PRINCIPAL" you will be able to see "new principals" and "select a role", in "new principals" type "allUsers" and in 
+               "select a role" go to "cloud storage" click on "cloud storage" and select "storage object viewer" and hit on save.
             3. After this, go to "https://cloud.google.com/docs/authentication/getting-started#create-service-account-console"  and 
                there you will see creating service account, go to creating service account, click on console, and hit on creating service account
-            4. Then select your LSTM created project, in service account details add service name "lstm-github-forecasting" and click on create and 
-               continue and hit on done.
+            4. Then select your LSTM created project, in service account details add service name "lstm-github-forecasting" and click on "create and 
+               continue", then in Grant this service account access to project click on "select the role",choose "basic" and choose "owner"and hit on done.
             5. After that you will see your created service, click on the created service, go to keys, click on add key, and click create new key.
-            6. Created key will get downloaded in .json format, replace that downloaded file with <name>.json in the given LSTM code
+            6. Created key will get downloaded in .json format, copy that downloaded file in the given LSTM code
             7. Then, on cmd terminal type "set GOOGLE_APPLICATION_CREDENTIALS=KEY_PATH" (Replace KEY_PATH with the path of the JSON file that contains your service account key.)
 
        3: Type `docker` on cmd terminal and press enter to get all required information
@@ -47,13 +54,15 @@ Step3: Deploying LSTM to gcloud platform
 
        13: Type `docker push <your newest created tag>` on cmd and hit enter
 
-       14: You have make your empty github repository and generate GitHub Access token and have to push your code to repository.
-
-       15: Go to cloud run and create new service, service name will be your GCloud project name and for container image url 
+       14: Go to cloud run and create new service, service name will be your GCloud project name and for container image url 
             hit select and selects your latest id and hit select and edit container port to '8080', increase the memory limit 
-            to 1GiB and add environment variable as shown in panopto video.
+            to 1GiB and go to variable and secrets and click on add environment variable as follows(there will three environment variable):
+                Name                                 value  
+            a. GOOGLE_APPLICATION_CREDENTIALS     "<yourjsonfile>.json"
+            b. BASE_IMAGE_PATH                    "https://storage.googleapis.com/your bucket name/"
+            c. BUCKET_NAME                         "your bucket name"
 
-       16: This will create the service on port 8080 and will generate the url, hit the url.
+       16: Hit the create, this will create the service on port 8080 and will generate the url, hit the url.
 
      
 Step4: To run locally:

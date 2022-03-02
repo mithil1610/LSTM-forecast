@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "lstm-forecast-timeseries",
+  "private_key_id": "52f315b8c29cdd5d5d48b5239a6b710f507b773d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCeUuX9ouYyB9Mm\njt2CTq84RUU/RMe+lQh/y0nFJhi52GA9RWDiX0h13fOSRV8gZ+f8eN00TzpwcMkO\n+8NlNAheZRtu6K9/3M+pvs8PHiDkqRa0/v6Cr7nSLDlFVa9Axu8r90RjQ68yn8GI\ncBdfI6ruXvHLtD9HZVNdJujl8A7BQNIEtsXqA8Rj6QuRjOwzPSqN7I2ORnX+/puu\nwCyAVvlSRMLkQs/HpsCr3evJug5orqjQWt2REYW0ga1PzZY7ltUEJHpDwc74+HM8\nMJSpBORxEjXjnpck5HwuKunuDyVFd5IP6Vkrgl7wZnh7+ulXL9E74Th1A/WTyHa2\nAwXjZAJ1AgMBAAECggEABFQ/9a9+m9+a5nMBm46LO/6o5hH7ZDqvAM+ONNXV1z8T\nYpmDDK2OTarD/jvnXft5XG3xnnyMHIb4+G/p59qEYBBjr6StJ9Hh28Jb5w3r2FTH\nSiuuyeQEMLsE1eCB6kOGRq18MTqoj7nOkOx/txpCkkIGWouTL2CV5vYpaCAoRyBz\nkoZzGuUs0P9lGpY73ydAfDYBif6wtsyx0YOFhFiOamJ0TgknTnJxk797ksfy/x0+\nN5UB2ydOKq+ZBU/aa0jZ+RWvTB/1qKZ72mGgG7TbtPObQTHfcVRSz3Rp7YC8wA5q\n7BYPQ4ecopTZ36KYO37XnI37ZYUiQs2suOSyWdm0AQKBgQDZtTOncbe/D9UfRWLY\nls0Esm3E1gwyEACWWs5KEJ5GfWJLFCj49cLn5j6IGbFYCEA6wqi+HFa5zAA/nJj4\nl2/pkQRiISsX6sAMDn4wVft5KuaE0UyZg3vKhsOV+KSRi0QH8N1CgSEpCAxCSizB\n7fJyWF0azIO+8IIaaAsyuOhF7wKBgQC6K8t1IorrTcMNKEJL+/3p7yOtSnsFb1zK\nJ8DhT/8pRMKnvi2lu+z8dXihFBosOYo9XTw0ASKbn66c/6bwnx0GmggKKY1RQQ6d\n6XxSa3hcKI3yq9+dLEysivFqir/4L3aK6AzAuWXCKm0A+3PjHMztQreNKGzQ7rZt\npuiBFnnB2wKBgQDDxRsnBq6aBC29ChMh+zFveNgWufiLiDJPAmcg2SLK9nNOWlmh\nzrYu/K/ciWYdaIYBkQxWsHsYZqcOjM5ONTewy/QqHfN3dWSvMtUsuBUD150lcGS2\nYzMNYvQ8RzQNoTNTBLii1iWwlQkZD0SCO2vagTVwJNqP+Ay2nDr9qKNORwKBgQCe\n4h9qYUeD18KeKPyjknS5wFCHZSgmlErxcAnpgHc4RimGNQUKC58OOkbv2ZMYqSa0\nhiyKCWn6vMWt0XUsp+6CotQ3sAyeCtKprAlg4b0/kZDLSSm3HoZ1PsMX9UAuVHtr\nwuyXUeJpWgHbM75MVlkCJ800mAp+KSvh2u9Us9THvwKBgQCpgxrwEeXWhkSfOn8T\n2RYbkZ+iOdQ2Nk4CH3glR3E7EFRhQJKGi3RsqiXAlF2TaVxrwsDydfsarp7Ut6tk\nAlCEWJ+i8izVBAUt3pn5t+He0dtp0JRpJT4E1XvD/Qk2dBqRSCekHHpFGpXB3PJT\nbTIjxwbcGgUmccLp7sWC0jT6Cw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "lstm-forecast02@lstm-forecast-timeseries.iam.gserviceaccount.com",
+  "client_id": "101238560572247543567",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/lstm-forecast02%40lstm-forecast-timeseries.iam.gserviceaccount.com"
+}
