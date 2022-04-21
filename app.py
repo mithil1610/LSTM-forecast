@@ -311,7 +311,9 @@ def forecast():
                 sum_created += month_issue_created_dict[key]
             created_sum.append([repo_names[j], sum_created])
 
-            closed_at = df['closed_at'].sort_values(ascending=True)
+            closed_at = []
+            if not df['closed_at'].empty:
+                closed_at = df['closed_at'].sort_values(ascending=True)
             month_issue_closed = pd.to_datetime(
                 pd.Series(closed_at), format='%Y/%m/%d')
             month_issue_closed.index = month_issue_closed.dt.to_period('m')
