@@ -227,7 +227,7 @@ def forecast():
         "pallets/flask" ]
     GITHUB_URL = f"https://api.github.com/"
     token = os.environ.get(
-        'GITHUB_TOKEN', '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')
+        'GITHUB_TOKEN', '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')
     headers = {
         "Authorization": f'token {token}'
     }
