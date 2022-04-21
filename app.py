@@ -314,7 +314,7 @@ def forecast():
         "lstm_generated_image_url": LSTM_GENERATED_URL,
         "all_issues_data_image": ALL_ISSUES_DATA_URL,
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
-        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created.",
+        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created." },
         "week_line_chart_closed": { "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL, "text": max_issue_day_closed + " has maximum number of issues (" + max_issue_count_closed + ") closed.", },
     }
     # Returns image url back to flask microservice
