@@ -166,6 +166,9 @@ def forecast():
     
     STACKED_BAR_CHART = "stacked_bar_chart" + type + "_"+ repo_name + ".png"
     STACKED_BAR_CHART_URL = BASE_IMAGE_PATH + STACKED_BAR_CHART
+    
+    WEEK_LINE_CHART = "week_line_chart" + type + "_"+ repo_name + ".png"
+    WEEK_LINE_CHART_URL = BASE_IMAGE_PATH + WEEK_LINE_CHART
 
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
@@ -244,7 +247,7 @@ def forecast():
             array = [str(key), month_issue_closed_dict[key]]
             closed_at_issues.append(array)
 
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(12, 7))
     x = []
     arr_y1 = []
     for i in range(len(created_at_issues)):
@@ -255,10 +258,21 @@ def forecast():
         arr_y2.append(closed_at_issues[i][1])
     plt.bar(x, arr_y1, color = 'blue')
     plt.bar(x, arr_y2, bottom = arr_y1, color='yellow')
-    plt.legend(["created_at", "closed_at"])
+    plt.legend(["Created Issues", "Closed Issues"])
     plt.xticks(rotation=90)
     plt.title('Stacked bar chart for to plot the created and closed issues for every Repository')
     plt.savefig(LOCAL_IMAGE_PATH + STACKED_BAR_CHART)
+
+    x = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    data_frame['created_at'] = pd.to_datetime(data_frame['created_at'], errors='coerce')
+    week_df = data_frame.groupby(data_frame['created_at'].dt.day_name()).size()
+    week_df = pd.DataFrame({'Created_On':week_df.index, 'Count':week_df.values})
+    week_df = week_df.groupby(['Created_On']).sum().reindex(x)
+    max_issue_count = week_df.max()
+    max_issue_day = week_df['Count'].idxmax()
+    plt.figure(figsize=(12, 7))
+    plt = week_df.plot.line()
+    plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
 
     # Uploads an images into the google cloud storage bucket
     bucket = client.get_bucket(BUCKET_NAME)
@@ -274,6 +288,9 @@ def forecast():
     new_blob = bucket.blob(STACKED_BAR_CHART)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + STACKED_BAR_CHART)
+    new_blob = bucket.blob(WEEK_LINE_CHART)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
 
     # Construct the response
     json_response = {
@@ -281,6 +298,7 @@ def forecast():
         "lstm_generated_image_url": LSTM_GENERATED_URL,
         "all_issues_data_image": ALL_ISSUES_DATA_URL,
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
+        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created." },
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
