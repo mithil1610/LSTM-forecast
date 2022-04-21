@@ -273,8 +273,11 @@ def forecast():
     week_df = week_df.groupby(['Created_On']).sum().reindex(x)
     max_issue_count = week_df.max()
     max_issue_day = week_df['Count'].idxmax()
-    plt = week_df.plot.line()
     plt.figure(figsize=(12, 7))
+    plt.plot(week_df['Count'], label='Issues')
+    plt.title('Number of Issues Created for particular Week Days.')
+    plt.ylabel('Number of Issues')
+    plt.xlabel('Week Days')
     plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
     
     data_frame['closed_at'] = pd.to_datetime(data_frame['closed_at'], errors='coerce')
@@ -283,8 +286,11 @@ def forecast():
     week_df = week_df.groupby(['Closed_On']).sum().reindex(x)
     max_issue_count_closed = week_df.max()
     max_issue_day_closed = week_df['Count'].idxmax()
-    plt = week_df.plot.line()
     plt.figure(figsize=(12, 7))
+    plt.plot(week_df['Count'], label='Issues')
+    plt.title('Number of Issues Closed for particular Week Days.')
+    plt.ylabel('Number of Issues')
+    plt.xlabel('Week Days')
     plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART_CLOSED)
 
     # Uploads an images into the google cloud storage bucket
