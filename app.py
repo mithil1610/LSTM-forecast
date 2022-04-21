@@ -169,6 +169,9 @@ def forecast():
     
     WEEK_LINE_CHART = "week_line_chart" + type + "_"+ repo_name + ".png"
     WEEK_LINE_CHART_URL = BASE_IMAGE_PATH + WEEK_LINE_CHART
+    
+    WEEK_LINE_CHART_CLOSED = "week_line_chart_closed" + type + "_"+ repo_name + ".png"
+    WEEK_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + WEEK_LINE_CHART_CLOSED
 
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
@@ -273,6 +276,16 @@ def forecast():
     plt.figure(figsize=(12, 7))
     plt = week_df.plot.line()
     plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
+    
+    data_frame['closed_at'] = pd.to_datetime(data_frame['closed_at'], errors='coerce')
+    week_df = data_frame.groupby(data_frame['closed_at'].dt.day_name()).size()
+    week_df = pd.DataFrame({'Closed_On':week_df.index, 'Count':week_df.values})
+    week_df = week_df.groupby(['Closed_On']).sum().reindex(x)
+    max_issue_count_closed = week_df.max()
+    max_issue_day_closed = week_df['Count'].idxmax()
+    plt.figure(figsize=(12, 7))
+    plt = week_df.plot.line()
+    plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART_CLOSED)
 
     # Uploads an images into the google cloud storage bucket
     bucket = client.get_bucket(BUCKET_NAME)
@@ -291,6 +304,9 @@ def forecast():
     new_blob = bucket.blob(WEEK_LINE_CHART)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
+    new_blob = bucket.blob(WEEK_LINE_CHART_CLOSED)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + WEEK_LINE_CHART_CLOSED)
 
     # Construct the response
     json_response = {
@@ -298,7 +314,8 @@ def forecast():
         "lstm_generated_image_url": LSTM_GENERATED_URL,
         "all_issues_data_image": ALL_ISSUES_DATA_URL,
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
-        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created." },
+        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created.",
+        "week_line_chart_closed": { "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL, "text": max_issue_day_closed + " has maximum number of issues (" + max_issue_count_closed + ") closed.", },
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
