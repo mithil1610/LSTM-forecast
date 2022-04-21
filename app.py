@@ -296,7 +296,9 @@ def forecast():
             created_sum.append([repo_names[j], 0])
             closed_sum.append([repo_names[j], 0])
         else:
-            created_at = df['created_at']
+            created_at = []
+            if not df['created_at'].empty:
+                created_at = df['created_at']
             month_issue_created = pd.to_datetime(
                 pd.Series(created_at), format='%Y/%m/%d')
             month_issue_created.index = month_issue_created.dt.to_period('m')
