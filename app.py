@@ -219,8 +219,8 @@ def forecast():
     
     created_at_issues = []
     closed_at_issues = []
-    if not df.empty:
-        created_at = df['created_at']
+    if not data_frame.empty:
+        created_at = data_frame['created_at']
         month_issue_created = pd.to_datetime(
             pd.Series(created_at), format='%Y/%m/%d')
         month_issue_created.index = month_issue_created.dt.to_period('m')
@@ -232,7 +232,7 @@ def forecast():
             array = [str(key), month_issue_created_dict[key]]
             created_at_issues.append(array)
 
-        closed_at = df['closed_at'].sort_values(ascending=True)
+        closed_at = data_frame['closed_at'].sort_values(ascending=True)
         month_issue_closed = pd.to_datetime(
             pd.Series(closed_at), format='%Y/%m/%d')
         month_issue_closed.index = month_issue_closed.dt.to_period('m')
@@ -243,7 +243,7 @@ def forecast():
         for key in month_issue_closed_dict.keys():
             array = [str(key), month_issue_closed_dict[key]]
             closed_at_issues.append(array)
-    
+
     plt.figure(figsize=(12, 6))
     x = []
     arr_y1 = []
