@@ -177,6 +177,15 @@ def forecast():
     MONTH_LINE_CHART_CLOSED = "month_line_chart_closed" + type + "_"+ repo_name + ".png"
     MONTH_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + MONTH_LINE_CHART_CLOSED
 
+    PULL_CHART = "pull_chart_"+ repo_name + ".png"
+    PULL_CHART_URL = BASE_IMAGE_PATH + PULL_CHART
+    
+    PULL_CHART_LOSS = "pull_chart_loss_"+ repo_name + ".png"
+    PULL_CHART_LOSS_URL = BASE_IMAGE_PATH + PULL_CHART_LOSS
+    
+    PULL_CHART_PREDICTIONS = "pull_chart_predictions_"+ repo_name + ".png"
+    PULL_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + PULL_CHART_PREDICTIONS
+
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
         'BUCKET_NAME', 'Your_BUCKET_NAME')
@@ -334,6 +343,16 @@ def forecast():
     new_blob = bucket.blob(MONTH_LINE_CHART_CLOSED)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
+    bucket = client.get_bucket(BUCKET_NAME)
+    new_blob = bucket.blob(PULL_CHART)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART)
+    new_blob = bucket.blob(PULL_CHART_LOSS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART_LOSS)
+    new_blob = bucket.blob(PULL_CHART_PREDICTIONS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
 
     # Construct the response
     json_response = {
@@ -350,6 +369,9 @@ def forecast():
         "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
         "month_line_chart_closed1": max_issue_closed_month,
         "month_line_chart_closed2": str(max_issue_count_closed_month),
+        "pull_chart": PULL_CHART_URL,
+        "pull_chart_loss": PULL_CHART_LOSS_URL,
+        "pull_chart_predictions": PULL_CHART_PREDICTIONS_URL,
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
