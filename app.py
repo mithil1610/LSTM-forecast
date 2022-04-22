@@ -320,23 +320,7 @@ def forecast():
     plt.xlabel('Month Names')
     plt.savefig(LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
 
-
-    token = os.environ.get(
-        'GITHUB_TOKEN', '')
-    GITHUB_URL = f"https://api.github.com/"
-    headers = {
-        "Authorization": f'token {token}'
-    }
-    repository_url = GITHUB_URL + "repos/" + body["repo_name"] +'/pulls?state=created'
-    r = requests.get(repository_url, headers=headers)
-    data = r.json()
-    another_page = True
-    while another_page:
-        if 'next' in r.links:
-            r = requests.get(r.links['next']['url'], headers=headers)
-            data = data + r.json()
-        else:
-            another_page = False
+    data = body["pulls"]
     df = pd.DataFrame()
     arr = []
     for i in range(len(data)):
@@ -429,10 +413,6 @@ def forecast():
     new_blob = bucket.blob(PULL_CHART_PREDICTIONS)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
-
-    print(PULL_CHART_URL)
-    print(PULL_CHART_LOSS_URL)
-    print(PULL_CHART_PREDICTIONS_URL)
 
     # Construct the response
     json_response = {
