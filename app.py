@@ -177,13 +177,13 @@ def forecast():
     MONTH_LINE_CHART_CLOSED = "month_line_chart_closed" + type + "_"+ repo_name + ".png"
     MONTH_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + MONTH_LINE_CHART_CLOSED
     
-    PULL_CHART = "pull_chart" + type + "_"+ repo_name + ".png"
+    PULL_CHART = "pull_chart_"+ repo_name + ".png"
     PULL_CHART_URL = BASE_IMAGE_PATH + PULL_CHART
     
-    PULL_CHART_LOSS = "pull_chart_loss" + type + "_"+ repo_name + ".png"
+    PULL_CHART_LOSS = "pull_chart_loss_"+ repo_name + ".png"
     PULL_CHART_LOSS_URL = BASE_IMAGE_PATH + PULL_CHART_LOSS
     
-    PULL_CHART_PREDICTIONS = "pull_chart_predictions" + type + "_"+ repo_name + ".png"
+    PULL_CHART_PREDICTIONS = "pull_chart_predictions_"+ repo_name + ".png"
     PULL_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + PULL_CHART_PREDICTIONS
 
     # Add your unique Bucket Name if you want to run it local
@@ -429,6 +429,10 @@ def forecast():
     new_blob = bucket.blob(PULL_CHART_PREDICTIONS)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
+
+    print(PULL_CHART_URL)
+    print(PULL_CHART_LOSS_URL)
+    print(PULL_CHART_PREDICTIONS_URL)
 
     # Construct the response
     json_response = {
