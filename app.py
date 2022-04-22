@@ -177,14 +177,14 @@ def forecast():
     MONTH_LINE_CHART_CLOSED = "month_line_chart_closed" + type + "_"+ repo_name + ".png"
     MONTH_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + MONTH_LINE_CHART_CLOSED
     
-    # PULL_CHART = "pull_chart_"+ repo_name + ".png"
-    # PULL_CHART_URL = BASE_IMAGE_PATH + PULL_CHART
+    PULL_CHART = "pull_chart_"+ repo_name + ".png"
+    PULL_CHART_URL = BASE_IMAGE_PATH + PULL_CHART
     
-    # PULL_CHART_LOSS = "pull_chart_loss_"+ repo_name + ".png"
-    # PULL_CHART_LOSS_URL = BASE_IMAGE_PATH + PULL_CHART_LOSS
+    PULL_CHART_LOSS = "pull_chart_loss_"+ repo_name + ".png"
+    PULL_CHART_LOSS_URL = BASE_IMAGE_PATH + PULL_CHART_LOSS
     
-    # PULL_CHART_PREDICTIONS = "pull_chart_predictions_"+ repo_name + ".png"
-    # PULL_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + PULL_CHART_PREDICTIONS
+    PULL_CHART_PREDICTIONS = "pull_chart_predictions_"+ repo_name + ".png"
+    PULL_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + PULL_CHART_PREDICTIONS
 
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
@@ -320,6 +320,83 @@ def forecast():
     plt.xlabel('Month Names')
     plt.savefig(LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
 
+
+    token = os.environ.get(
+        'GITHUB_TOKEN', '')
+    GITHUB_URL = f"https://api.github.com/"
+    headers = {
+        "Authorization": f'token {token}'
+    }
+    repository_url = GITHUB_URL + "repos/" + body["repo_name"] +'/pulls?state=created'
+    r = requests.get(repository_url, headers=headers)
+    data = r.json()
+    another_page = True
+    while another_page:
+        if 'next' in r.links:
+            r = requests.get(r.links['next']['url'], headers=headers)
+            data = data + r.json()
+        else:
+            another_page = False
+    df = pd.DataFrame()
+    arr = []
+    for i in range(len(data)):
+        arr.append(data[i]['created_at'])
+    df['Created_At'] = arr
+    df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
+    df['Count'] = 1
+    df['Created_At'] = df['Created_At'].dt.to_period('M')
+    df = df.groupby('Created_At').sum()
+    
+    df1 = df.copy()
+    df1.index = pd.to_datetime(df1.index.to_timestamp())
+    plt.figure(figsize=(12, 7))
+    plt.plot(df1)
+    plt.title('Number of Pulls Created for particular Month.')
+    plt.ylabel('Number of Pulls')
+    plt.xlabel('Time')
+    plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART)
+    
+    train_data = df[:len(df)-int(len(df)/2)]
+    test_data = df[len(df)-int(len(df)/2):]
+    scaler = MinMaxScaler()
+    scaler.fit(train_data)
+    scaled_train_data = scaler.transform(train_data)
+    scaled_test_data = scaler.transform(test_data)
+    n_input = int(len(df)/2)
+    n_features= 1
+    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input, batch_size=1)
+    lstm_model = Sequential()
+    lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
+    lstm_model.add(Dense(1))
+    lstm_model.compile(optimizer='adam', loss='mse')
+    lstm_model.fit_generator(generator,epochs=20)
+
+    losses_lstm = lstm_model.history.history['loss']
+    plt.figure(figsize=(12, 7))
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.xticks(np.arange(0,21,1))
+    plt.plot(range(len(losses_lstm)),losses_lstm)
+    plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART_LOSS)
+
+    lstm_predictions_scaled = list()
+    batch = scaled_train_data[-n_input:]
+    current_batch = batch.reshape((1, n_input, n_features))
+    for i in range(len(test_data)):   
+        lstm_pred = lstm_model.predict(current_batch)[0]
+        lstm_predictions_scaled.append(lstm_pred) 
+        current_batch = np.append(current_batch[:,1:,:],[[lstm_pred]],axis=1)
+    lstm_predictions = scaler.inverse_transform(lstm_predictions_scaled)
+    test_data['LSTM_Predictions'] = lstm_predictions
+
+    test_data.index = pd.to_datetime(test_data.index.to_timestamp())
+    plt.figure(figsize=(12, 7))
+    plt.plot(test_data['Count'])
+    plt.plot(test_data['LSTM_Predictions'])
+    plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
+
+
+
     # Uploads an images into the google cloud storage bucket
     bucket = client.get_bucket(BUCKET_NAME)
     new_blob = bucket.blob(MODEL_LOSS_IMAGE_NAME)
@@ -343,15 +420,19 @@ def forecast():
     new_blob = bucket.blob(MONTH_LINE_CHART_CLOSED)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
-    # new_blob = bucket.blob(PULL_CHART)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + PULL_CHART)
-    # new_blob = bucket.blob(PULL_CHART_LOSS)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + PULL_CHART_LOSS)
-    # new_blob = bucket.blob(PULL_CHART_PREDICTIONS)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
+    new_blob = bucket.blob(PULL_CHART)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART)
+    new_blob = bucket.blob(PULL_CHART_LOSS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART_LOSS)
+    new_blob = bucket.blob(PULL_CHART_PREDICTIONS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
+
+    print(PULL_CHART_URL)
+    print(PULL_CHART_LOSS_URL)
+    print(PULL_CHART_PREDICTIONS_URL)
 
     # Construct the response
     json_response = {
@@ -368,6 +449,9 @@ def forecast():
         "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
         "month_line_chart_closed1": max_issue_closed_month,
         "month_line_chart_closed2": str(max_issue_count_closed_month),
+        "pull_chart": PULL_CHART_URL,
+        "pull_chart_loss": PULL_CHART_LOSS_URL,
+        "pull_chart_predictions": PULL_CHART_PREDICTIONS_URL,
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
