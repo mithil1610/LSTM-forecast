@@ -337,7 +337,7 @@ def forecast():
             data = data + r.json()
         else:
             another_page = False
-    df = pd.DataFrame()
+    df = pd.DataFrame(None)
     arr = []
     for i in range(len(data)):
         arr.append(data[i]['created_at'])
@@ -449,9 +449,7 @@ def forecast():
         "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
         "month_line_chart_closed1": max_issue_closed_month,
         "month_line_chart_closed2": str(max_issue_count_closed_month),
-        "pull_chart": PULL_CHART_URL,
-        "pull_chart_loss": PULL_CHART_LOSS_URL,
-        "pull_chart_predictions": PULL_CHART_PREDICTIONS_URL,
+        
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
