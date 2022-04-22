@@ -340,15 +340,7 @@ def forecast():
         "lstm_generated_image_url": LSTM_GENERATED_URL,
         "all_issues_data_image": ALL_ISSUES_DATA_URL,
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
-        "week_line_chart": WEEK_LINE_CHART_URL,
-        "week_line_chart1": max_issue_day,
-        "week_line_chart2": max_issue_count,
-        "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL,
-        "week_line_chart_closed1": max_issue_day_closed,
-        "week_line_chart_closed2": max_issue_count_closed,
-        "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
-        "month_line_chart_closed1": max_issue_closed_month,
-        "month_line_chart_closed2": max_issue_count_closed_month,
+
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
