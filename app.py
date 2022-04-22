@@ -342,13 +342,13 @@ def forecast():
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
         "week_line_chart": WEEK_LINE_CHART_URL,
         "week_line_chart1": max_issue_day,
-        "week_line_chart2": str(max_issue_count['Count']),
+        "week_line_chart2": str(max_issue_count_closed_month),
         "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL,
         "week_line_chart_closed1": max_issue_day_closed,
-        "week_line_chart_closed2": str(max_issue_count_closed['Count']),
+        "week_line_chart_closed2": str(max_issue_count_closed),
         "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
         "month_line_chart_closed1": max_issue_closed_month,
-        "month_line_chart_closed2": str(max_issue_count_closed_month['Count']),
+        "month_line_chart_closed2": str(max_issue_count_closed_month),
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
