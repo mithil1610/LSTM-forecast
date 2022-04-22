@@ -172,6 +172,9 @@ def forecast():
     
     WEEK_LINE_CHART_CLOSED = "week_line_chart_closed" + type + "_"+ repo_name + ".png"
     WEEK_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + WEEK_LINE_CHART_CLOSED
+    
+    MONTH_LINE_CHART_CLOSED = "month_line_chart_closed" + type + "_"+ repo_name + ".png"
+    MONTH_LINE_CHART_CLOSED_URL = BASE_IMAGE_PATH + MONTH_LINE_CHART_CLOSED
 
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
@@ -292,6 +295,20 @@ def forecast():
     plt.ylabel('Number of Issues')
     plt.xlabel('Week Days')
     plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART_CLOSED)
+    
+    x = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    data_frame['closed_at'] = pd.to_datetime(data_frame['closed_at'], errors='coerce')
+    month_df = data_frame.groupby(data_frame['closed_at'].dt.month_name()).size()
+    month_df = pd.DataFrame({'Closed_On':month_df.index, 'Count':month_df.values})
+    month_df = month_df.groupby(['Closed_On']).sum().reindex(x)
+    max_issue_count_closed_month = month_df.max()
+    max_issue_closed_month = month_df['Count'].idxmax()
+    plt.figure(figsize=(12, 7))
+    plt.plot(month_df['Count'], label='Issues')
+    plt.title('Number of Issues Closed for particular Month.')
+    plt.ylabel('Number of Issues')
+    plt.xlabel('Month Names')
+    plt.savefig(LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
 
     # Uploads an images into the google cloud storage bucket
     bucket = client.get_bucket(BUCKET_NAME)
@@ -313,6 +330,9 @@ def forecast():
     new_blob = bucket.blob(WEEK_LINE_CHART_CLOSED)
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + WEEK_LINE_CHART_CLOSED)
+    new_blob = bucket.blob(MONTH_LINE_CHART_CLOSED)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + MONTH_LINE_CHART_CLOSED)
 
     # Construct the response
     json_response = {
@@ -320,8 +340,15 @@ def forecast():
         "lstm_generated_image_url": LSTM_GENERATED_URL,
         "all_issues_data_image": ALL_ISSUES_DATA_URL,
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
-        "week_line_chart": { "week_line_chart": WEEK_LINE_CHART_URL, "text": max_issue_day + " has maximum number of issues (" + max_issue_count + ") created." },
-        "week_line_chart_closed": { "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL, "text": max_issue_day_closed + " has maximum number of issues (" + max_issue_count_closed + ") closed.", },
+        "week_line_chart": WEEK_LINE_CHART_URL,
+        "week_line_chart1": max_issue_day,
+        "week_line_chart2": max_issue_count,
+        "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL,
+        "week_line_chart_closed1": max_issue_day_closed,
+        "week_line_chart_closed2": max_issue_count_closed,
+        "month_line_chart_closed": MONTH_LINE_CHART_CLOSED_URL,
+        "month_line_chart_closed1": max_issue_closed_month,
+        "month_line_chart_closed2": max_issue_count_closed_month,
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
