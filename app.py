@@ -418,21 +418,13 @@ def pulls():
     
     train_data = df[:len(df)-int(len(df)/2)]
     test_data = df[len(df)-int(len(df)/2):]
-    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaler = MinMaxScaler()
     scaler.fit(train_data)
     scaled_train_data = scaler.transform(train_data)
     scaled_test_data = scaler.transform(test_data)
-    # n_input = int(len(df)/2)
-    n_input = 3
+    n_input = int(len(df)/2)
     n_features= 1
-    
-    dataset = scaler.fit_transform(train_data)
-    # split into train and test sets
-    train_size = int(len(dataset) * 0.67)
-    test_size = len(dataset) - train_size
-    train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
-
-    generator = TimeseriesGenerator(train, train, length=n_input, batch_size=1)
+    generator = keras.preprocessing.sequence.TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input, batch_size=1)
     lstm_model = Sequential()
     lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
     lstm_model.add(Dense(1))
@@ -524,21 +516,13 @@ def commits():
     
     train_data = df[:len(df)-int(len(df)/2)]
     test_data = df[len(df)-int(len(df)/2):]
-    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaler = MinMaxScaler()
     scaler.fit(train_data)
     scaled_train_data = scaler.transform(train_data)
     scaled_test_data = scaler.transform(test_data)
-    # n_input = int(len(df)/2)
-    n_input = 3
+    n_input = int(len(df)/2)
     n_features= 1
-
-    dataset = scaler.fit_transform(train_data)
-    # split into train and test sets
-    train_size = int(len(dataset) * 0.67)
-    test_size = len(dataset) - train_size
-    train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
-
-    generator = TimeseriesGenerator(train, train, length=n_input, batch_size=1)
+    generator = keras.preprocessing.sequence.TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input, batch_size=1)
     lstm_model = Sequential()
     lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
     lstm_model.add(Dense(1))
