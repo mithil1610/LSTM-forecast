@@ -29,6 +29,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.preprocessing.sequence import TimeseriesGenerator
 import json
 
+
 # Import required storage package from Google Cloud Storage
 from google.cloud import storage
 
