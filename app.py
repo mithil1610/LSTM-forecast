@@ -416,8 +416,8 @@ def pulls():
     plt.xlabel('Time')
     plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART)
     
-    train_data = np.array(df[:len(df)-int(len(df)/2)])
-    test_data = np.array(df[len(df)-int(len(df)/2):])
+    train_data = df[:len(df)-int(len(df)/2)]
+    test_data = df[len(df)-int(len(df)/2):]
     scaler = MinMaxScaler()
     scaler.fit(train_data)
     scaled_train_data = scaler.transform(train_data)
@@ -514,11 +514,11 @@ def commits():
     plt.xlabel('Time')
     plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART)
     
-    train_data = np.array(df[:len(df)-int(len(df)/2)])
-    test_data = np.array(df[len(df)-int(len(df)/2):])
+    train_data = df[:len(df)-int(len(df)/2)]
+    test_data = df[len(df)-int(len(df)/2):]
     scaler = MinMaxScaler()
     scaler.fit(train_data)
-    scaled_train_data = scaler.transform(train_data)
+    scaled_train_data = np.array(scaler.transform(train_data))
     scaled_test_data = scaler.transform(test_data)
     n_input = int(len(df)/2)
     n_features= 1
