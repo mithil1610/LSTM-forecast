@@ -528,7 +528,7 @@ def commits():
     plt.figure(figsize=(12, 7))
     plt.plot(df1)
     plt.title('Number of Commits Created for particular Month.')
-    plt.ylabel('Number of Pulls')
+    plt.ylabel('Number of Commits')
     plt.xlabel('Time')
     plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART)
     
