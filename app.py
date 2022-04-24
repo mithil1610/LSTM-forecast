@@ -26,7 +26,7 @@ from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Input, Dense, LSTM, Dropout
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+from tensorflow.python.keras.preprocessing.sequence import TimeseriesGenerator
 import json
 
 # Import required storage package from Google Cloud Storage
