@@ -399,6 +399,16 @@ def pulls():
     PULL_CHART_PREDICTIONS = "pull_chart_predictions_"+ repo_name.split("/")[1] + ".png"
     PULL_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + PULL_CHART_PREDICTIONS
 
+
+    COMMIT_CHART = "commit_chart_"+ repo_name.split("/")[1] + ".png"
+    COMMIT_CHART_URL = BASE_IMAGE_PATH + COMMIT_CHART
+    
+    COMMIT_CHART_LOSS = "commit_chart_loss_"+ repo_name.split("/")[1] + ".png"
+    COMMIT_CHART_LOSS_URL = BASE_IMAGE_PATH + COMMIT_CHART_LOSS
+    
+    COMMIT_CHART_PREDICTIONS = "commit_chart_predictions_"+ repo_name.split("/")[1] + ".png"
+    COMMIT_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + COMMIT_CHART_PREDICTIONS
+
     # Add your unique Bucket Name if you want to run it local
     BUCKET_NAME = os.environ.get(
         'BUCKET_NAME', 'Your_BUCKET_NAME')
@@ -472,10 +482,23 @@ def pulls():
     new_blob.upload_from_filename(
         filename=LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
     
+    new_blob = bucket.blob(COMMIT_CHART)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART)
+    new_blob = bucket.blob(COMMIT_CHART_LOSS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART_LOSS)
+    new_blob = bucket.blob(COMMIT_CHART_PREDICTIONS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
+    
     json_response = {
         "pull_chart": PULL_CHART_URL,
         "pull_chart_loss": PULL_CHART_LOSS_URL,
         "pull_chart_predictions": PULL_CHART_PREDICTIONS_URL,
+        "commit_chart": COMMIT_CHART_URL,
+        "commit_chart_loss": COMMIT_CHART_LOSS_URL,
+        "commit_chart_predictions": COMMIT_CHART_PREDICTIONS_URL,
     }
     # Returns image url back to flask microservice
     return jsonify(json_response)
@@ -507,71 +530,71 @@ def commits():
     BUCKET_NAME = os.environ.get(
         'BUCKET_NAME', 'Your_BUCKET_NAME')
 
-    # # df = pd.DataFrame(data)
-    # # df = df[['created_at']]
-    # # df.rename(columns = {'created_at':'Created_At'}, inplace = True)
-    # # df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
-    # # df['Count'] = 1
-    # # df['Created_At'] = df['Created_At'].dt.to_period('M')
-    # # df = df.groupby('Created_At').sum()
-
-    # df = pd.DataFrame()
-    # arr = []
-    # for i in range(len(data)):
-    #     arr.append(data[i]['commit']['committer']['date'])
-    # df['Created_At'] = arr
+    # df = pd.DataFrame(data)
+    # df = df[['created_at']]
+    # df.rename(columns = {'created_at':'Created_At'}, inplace = True)
     # df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
     # df['Count'] = 1
     # df['Created_At'] = df['Created_At'].dt.to_period('M')
     # df = df.groupby('Created_At').sum()
+
+    df = pd.DataFrame()
+    arr = []
+    for i in range(len(data)):
+        arr.append(data[i]['commit']['committer']['date'])
+    df['Created_At'] = arr
+    df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
+    df['Count'] = 1
+    df['Created_At'] = df['Created_At'].dt.to_period('M')
+    df = df.groupby('Created_At').sum()
     
-    # df1 = df.copy()
-    # df1.index = pd.to_datetime(df1.index.to_timestamp())
-    # plt.figure(figsize=(12, 7))
-    # plt.plot(df1)
-    # plt.title('Number of Commits Created for particular Month.')
-    # plt.ylabel('Number of Commits')
-    # plt.xlabel('Time')
-    # plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART)
+    df1 = df.copy()
+    df1.index = pd.to_datetime(df1.index.to_timestamp())
+    plt.figure(figsize=(12, 7))
+    plt.plot(df1)
+    plt.title('Number of Commits Created for particular Month.')
+    plt.ylabel('Number of Commits')
+    plt.xlabel('Time')
+    plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART)
     
-    # train_data = df[:len(df)-int(len(df)/2)]
-    # test_data = df[len(df)-int(len(df)/2):]
-    # scaler = MinMaxScaler()
-    # scaler.fit(train_data)
-    # scaled_train_data = scaler.transform(train_data)
-    # scaled_test_data = scaler.transform(test_data)
-    # n_input = int(len(df)/2)
-    # n_features= 1
-    # generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
-    # lstm_model = Sequential()
-    # lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
-    # lstm_model.add(Dense(1))
-    # lstm_model.compile(optimizer='adam', loss='mse')
-    # lstm_model.fit_generator(generator,epochs=20)
+    train_data = df[:len(df)-int(len(df)/2)]
+    test_data = df[len(df)-int(len(df)/2):]
+    scaler = MinMaxScaler()
+    scaler.fit(train_data)
+    scaled_train_data = scaler.transform(train_data)
+    scaled_test_data = scaler.transform(test_data)
+    n_input = int(len(df)/2)
+    n_features= 1
+    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
+    lstm_model = Sequential()
+    lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
+    lstm_model.add(Dense(1))
+    lstm_model.compile(optimizer='adam', loss='mse')
+    lstm_model.fit_generator(generator,epochs=20)
 
-    # losses_lstm = lstm_model.history.history['loss']
-    # plt.figure(figsize=(12, 7))
-    # plt.xlabel("Epochs")
-    # plt.ylabel("Loss")
-    # plt.xticks(np.arange(0,21,1))
-    # plt.plot(range(len(losses_lstm)),losses_lstm)
-    # plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_LOSS)
+    losses_lstm = lstm_model.history.history['loss']
+    plt.figure(figsize=(12, 7))
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.xticks(np.arange(0,21,1))
+    plt.plot(range(len(losses_lstm)),losses_lstm)
+    plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_LOSS)
 
-    # lstm_predictions_scaled = list()
-    # batch = scaled_train_data[-n_input:]
-    # current_batch = batch.reshape((1, n_input, n_features))
-    # for i in range(len(test_data)):   
-    #     lstm_pred = lstm_model.predict(current_batch)[0]
-    #     lstm_predictions_scaled.append(lstm_pred) 
-    #     current_batch = np.append(current_batch[:,1:,:],[[lstm_pred]],axis=1)
-    # lstm_predictions = scaler.inverse_transform(lstm_predictions_scaled)
-    # test_data['LSTM_Predictions'] = lstm_predictions
+    lstm_predictions_scaled = list()
+    batch = scaled_train_data[-n_input:]
+    current_batch = batch.reshape((1, n_input, n_features))
+    for i in range(len(test_data)):   
+        lstm_pred = lstm_model.predict(current_batch)[0]
+        lstm_predictions_scaled.append(lstm_pred) 
+        current_batch = np.append(current_batch[:,1:,:],[[lstm_pred]],axis=1)
+    lstm_predictions = scaler.inverse_transform(lstm_predictions_scaled)
+    test_data['LSTM_Predictions'] = lstm_predictions
 
-    # test_data.index = pd.to_datetime(test_data.index.to_timestamp())
-    # plt.figure(figsize=(12, 7))
-    # plt.plot(test_data['Count'])
-    # plt.plot(test_data['LSTM_Predictions'])
-    # plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
+    test_data.index = pd.to_datetime(test_data.index.to_timestamp())
+    plt.figure(figsize=(12, 7))
+    plt.plot(test_data['Count'])
+    plt.plot(test_data['LSTM_Predictions'])
+    plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
 
     bucket = client.get_bucket(BUCKET_NAME)
     new_blob = bucket.blob(COMMIT_CHART)
