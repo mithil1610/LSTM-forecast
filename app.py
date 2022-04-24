@@ -378,6 +378,10 @@ def forecast():
 
 @app.route('/api/pulls', methods=['POST'])
 def pulls():
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import LSTM
+
     body = request.get_json()
     data = body["pulls"]
     repo_name = body["repo"]
@@ -476,6 +480,10 @@ def pulls():
 
 @app.route('/api/commits', methods=['POST'])
 def commits():
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import LSTM
+
     body = request.get_json()
     data = body["commits"]
     repo_name = body["repo"]
@@ -497,9 +505,19 @@ def commits():
     BUCKET_NAME = os.environ.get(
         'BUCKET_NAME', 'Your_BUCKET_NAME')
 
-    df = pd.DataFrame(data)
-    df = df[['created_at']]
-    df.rename(columns = {'created_at':'Created_At'}, inplace = True)
+    # df = pd.DataFrame(data)
+    # df = df[['created_at']]
+    # df.rename(columns = {'created_at':'Created_At'}, inplace = True)
+    # df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
+    # df['Count'] = 1
+    # df['Created_At'] = df['Created_At'].dt.to_period('M')
+    # df = df.groupby('Created_At').sum()
+
+    df = pd.DataFrame()
+    arr = []
+    for i in range(len(data)):
+        arr.append(data[i]['commit']['committer']['date'])
+    df['Created_At'] = arr
     df['Created_At'] = pd.to_datetime(df['Created_At'], errors='coerce')
     df['Count'] = 1
     df['Created_At'] = df['Created_At'].dt.to_period('M')
