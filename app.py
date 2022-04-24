@@ -504,8 +504,8 @@ def commits():
     COMMIT_CHART_PREDICTIONS_URL = BASE_IMAGE_PATH + COMMIT_CHART_PREDICTIONS
 
     # Add your unique Bucket Name if you want to run it local
-    # BUCKET_NAME = os.environ.get(
-    #     'BUCKET_NAME', 'Your_BUCKET_NAME')
+    BUCKET_NAME = os.environ.get(
+        'BUCKET_NAME', 'Your_BUCKET_NAME')
 
     # # df = pd.DataFrame(data)
     # # df = df[['created_at']]
@@ -573,16 +573,16 @@ def commits():
     # plt.plot(test_data['LSTM_Predictions'])
     # plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
 
-    # bucket = client.get_bucket(BUCKET_NAME)
-    # new_blob = bucket.blob(COMMIT_CHART)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + COMMIT_CHART)
-    # new_blob = bucket.blob(COMMIT_CHART_LOSS)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + COMMIT_CHART_LOSS)
-    # new_blob = bucket.blob(COMMIT_CHART_PREDICTIONS)
-    # new_blob.upload_from_filename(
-    #     filename=LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
+    bucket = client.get_bucket(BUCKET_NAME)
+    new_blob = bucket.blob(COMMIT_CHART)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART)
+    new_blob = bucket.blob(COMMIT_CHART_LOSS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART_LOSS)
+    new_blob = bucket.blob(COMMIT_CHART_PREDICTIONS)
+    new_blob.upload_from_filename(
+        filename=LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
     
     json_response = {
         "commit_chart": COMMIT_CHART_URL,
