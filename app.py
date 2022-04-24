@@ -428,7 +428,7 @@ def pulls():
     scaled_test_data = scaler.transform(test_data)
     n_input = int(len(df)/2)
     n_features= 1
-    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input, batch_size=1)
+    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
     lstm_model = Sequential()
     lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
     lstm_model.add(Dense(1))
@@ -540,7 +540,7 @@ def commits():
     scaled_test_data = scaler.transform(test_data)
     n_input = int(len(df)/2)
     n_features= 1
-    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input, batch_size=1)
+    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
     lstm_model = Sequential()
     lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
     lstm_model.add(Dense(1))
