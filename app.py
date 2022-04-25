@@ -362,7 +362,7 @@ def forecast():
         "stacked_bar_chart": STACKED_BAR_CHART_URL,
         "week_line_chart": WEEK_LINE_CHART_URL,
         "week_line_chart1": max_issue_day,
-        "week_line_chart2": str(max_issue_count_closed_month),
+        "week_line_chart2": str(max_issue_count),
         "week_line_chart_closed": WEEK_LINE_CHART_CLOSED_URL,
         "week_line_chart_closed1": max_issue_day_closed,
         "week_line_chart_closed2": str(max_issue_count_closed),
