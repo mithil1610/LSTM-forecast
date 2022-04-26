@@ -286,50 +286,11 @@ def forecast():
     week_df = week_df.groupby(['Created_On']).sum().reindex(x)
     max_issue_count = week_df.max()
     max_issue_day = week_df['Count'].idxmax()
-    # plt.figure(figsize=(12, 7))
-    # plt.plot(week_df['Count'], label='Issues')
-    # plt.title('Number of Issues Created for particular Week Days.')
-    # plt.ylabel('Number of Issues')
-    # plt.xlabel('Week Days')
-
-    from keras.models import Sequential
-    from keras.layers import Dense
-    from keras.layers import LSTM
-    train_data = week_df[:len(week_df)-int(len(week_df)/2)]
-    test_data = week_df[len(week_df)-int(len(week_df)/2):]
-    scaler = MinMaxScaler()
-    scaler.fit(train_data)
-    scaled_train_data = scaler.transform(train_data)
-    scaled_test_data = scaler.transform(test_data)
-    n_input = int(len(week_df)/2)
-    n_features= 1
-    generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
-    lstm_model = Sequential()
-    lstm_model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
-    lstm_model.add(Dense(1))
-    lstm_model.compile(optimizer='adam', loss='mse')
-    lstm_model.fit_generator(generator,epochs=20)
-    lstm_predictions_scaled = list()
-    batch = scaled_train_data[-n_input:]
-    current_batch = batch.reshape((1, n_input, n_features))
-    for i in range(len(test_data)):   
-        lstm_pred = lstm_model.predict(current_batch)[0]
-        lstm_predictions_scaled.append(lstm_pred) 
-        current_batch = np.append(current_batch[:,1:,:],[[lstm_pred]],axis=1)
-    lstm_predictions = scaler.inverse_transform(lstm_predictions_scaled)
-    test_data['LSTM_Predictions'] = lstm_predictions
-
-    test_data.index = pd.to_datetime(test_data.index.to_timestamp())
     plt.figure(figsize=(12, 7))
-    plt.plot(test_data['Count'])
-    plt.plot(test_data['LSTM_Predictions'])
-    # plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
-
-
-
-
-
-    
+    plt.plot(week_df['Count'], label='Issues')
+    plt.title('Number of Issues Created for particular Week Days.')
+    plt.ylabel('Number of Issues')
+    plt.xlabel('Week Days')
     plt.savefig(LOCAL_IMAGE_PATH + WEEK_LINE_CHART)
     
     data_frame['closed_at'] = pd.to_datetime(data_frame['closed_at'], errors='coerce')
