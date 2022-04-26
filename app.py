@@ -292,7 +292,9 @@ def forecast():
     # plt.ylabel('Number of Issues')
     # plt.xlabel('Week Days')
 
-
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import LSTM
     train_data = week_df[:len(week_df)-int(len(week_df)/2)]
     test_data = week_df[len(week_df)-int(len(week_df)/2):]
     scaler = MinMaxScaler()
