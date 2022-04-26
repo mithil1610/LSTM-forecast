@@ -300,6 +300,7 @@ def forecast():
     scaler = MinMaxScaler()
     scaler.fit(train_data)
     scaled_train_data = scaler.transform(train_data)
+    scaled_test_data = scaler.transform(test_data)
     n_input = int(len(week_df)/2)
     n_features= 1
     generator = TimeseriesGenerator(scaled_train_data, scaled_train_data, length=n_input-1, batch_size=1)
@@ -322,7 +323,7 @@ def forecast():
     plt.figure(figsize=(12, 7))
     plt.plot(test_data['Count'])
     plt.plot(test_data['LSTM_Predictions'])
-    # plt.savefig(LOCAL_IMAGE_PATH + COMMIT_CHART_PREDICTIONS)
+    # plt.savefig(LOCAL_IMAGE_PATH + PULL_CHART_PREDICTIONS)
 
 
 
